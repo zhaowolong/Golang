@@ -13,7 +13,7 @@ import (
 
 var centerClient *cg.CenterClient
 
-func startCenterService() error {    
+func () error {    
 
     server := ipc.NewIpcServer(&cg.CenterServer{})
     client := ipc.NewIpcClient(server)
@@ -108,7 +108,7 @@ func Send(args []string) int {
 }
 
 // 将命令和处理函数对应
-func GetCommandHandlers() map[string]func(args []string) int {
+func   GetCommandHandlers() map[string]func(args []string) int {
     return map[string]func([]string) int {
         "help" : Help,
         "h" : Help,
