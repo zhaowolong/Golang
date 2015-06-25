@@ -14,4 +14,5 @@ func main() {
 	if err := L.DoFile("hello.lua"); err != nil {
 		panic(err)
 	}
+	L.SetGlobal("test")
 }

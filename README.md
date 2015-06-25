@@ -38,3 +38,6 @@ go excel:
 	http://www.oschina.net/p/go-xslx	
 go语言验证码服务器:
 	http://git.oschina.net/hanguofeng/gocaptcha
+
+关于服务器黏包问题：
+http://www.01happy.com/golang-tcp-socket-adhere/
