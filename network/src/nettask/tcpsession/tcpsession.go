@@ -18,19 +18,19 @@ type Tcpsession struct {
 	Send_que   chan *packet.Wpacket
 	raw        bool
 	send_close bool
-	ud         interface{}
+	key        interface{}
 }
 
 func (this *Tcpsession) IsRaw() bool {
 	return this.raw
 }
 
-func (this *Tcpsession) SetUd(ud interface{}) {
-	this.ud = ud
+func (this *Tcpsession) SetKey(key interface{}) {
+	this.key = key
 }
 
-func (this *Tcpsession) Ud() interface{} {
-	return this.ud
+func (this *Tcpsession) GetKey() interface{} {
+	return this.key
 }
 
 func dorecv(session *Tcpsession) {
@@ -59,9 +59,6 @@ func dorecv(session *Tcpsession) {
 			close(session.Packet_que)
 			break
 		}
-		fmt.Println("header is ", header)
-		fmt.Println("size is ", size)
-		fmt.Println("body is ", body)
 		pkbuf := make([]byte, size+4)
 		copy(pkbuf[:], header[:])
 		copy(pkbuf[4:], body[:])
