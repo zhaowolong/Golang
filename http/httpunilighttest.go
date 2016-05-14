@@ -26,8 +26,8 @@ var gateway1 = 0
 var gateway2 = 0
 var c = make(chan int) 
 var shutdown = 0
-var cnn = 1000
-var send =  10000
+var cnn = 1
+var send =  10
 var str = fmt.Sprintf(`{"do":"plat-token-login","gameid":300,"zoneid":301,"data":{"plataccount":"zwl", "platinfo":{"account":"zwl","platid":0,"email":"whj@whj.whj","gender":"male","nickname":"navy1125","timestamp":"12345","uid":"10722"}}}`)
 var countMsg = 0
 
@@ -54,7 +54,7 @@ func main(){
 func connect(goindex int) {
 	count := fmt.Sprintf("%s: %d", "plattokenlogin", goindex)
 	// get serverlist 
-	serverlist := fmt.Sprintf(`{"do":"request-zone-list", "gameid":%d, "zoneid":301, "data":{"platinfo":{"account":"", "platid":0}}}`, gameid)
+	serverlist := fmt.Sprintf(`{"do":"request-zone-list", "gameid":%d, "zoneid":301, "data":{"platinfo":{"account":"", "platid":35}}}`, gameid)
 	bOk, _:= httpsend(loginUrl,serverlist, count)
 	if !bOk {
 		logging.Error("httpsend error plat-token-login ")
@@ -63,7 +63,7 @@ func connect(goindex int) {
 
 	//logging.Info("zonelist  %s", string(zonelist))
 	// plat-token-login
-	plattokenlogin := fmt.Sprintf(`{"do":"plat-token-login", "gameid":%d, "zoneid":301, "data":{"platinfo":{"account":"", "platid":0}}}`, gameid)
+	plattokenlogin := fmt.Sprintf(`{"do":"plat-token-login", "gameid":%d, "zoneid":301, "data":{"platinfo":{"account":"", "platid":35}}}`, gameid)
 	bOk, token := httpsend(loginUrl, plattokenlogin, count)
 	if !bOk {
 		logging.Error("httpsend error plat-token-login ")
