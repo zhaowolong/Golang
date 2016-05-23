@@ -1,7 +1,6 @@
 package main
 
 import (
-	"crypto/md5"
 	"fmt"
 	"strconv"
 	//	"io"
@@ -9,6 +8,7 @@ import (
 	"time"
 	//"log"
 	//"math/rand"
+	"crypto/md5"
 	"net/http"
 	"strings"
 
@@ -29,15 +29,6 @@ var send = 10
 var countMsg = 0
 
 func main() {
-	/*
-		filePath, _ := filepath.Abs(os.Args[0])
-		if os.Getppid() != 1 {
-			logging.Info("server start as daemon:%s,%v", filePath, os.Args[1:])
-			cmd := exec.Command(filePath, os.Args[1:]...)
-			cmd.Start()
-			os.Exit(0)
-		}
-	*/
 
 	for i := 0; i < cnn; i++ {
 		goindex := i
@@ -49,6 +40,11 @@ func main() {
 }
 
 func connect(goindex int) {
+	pwd := "qwe123"
+	hash := md5.New()
+	hash.Write([]byte(pwd))
+	sum := fmt.Sprintf("%x", hash.Sum(nil))
+
 	count := fmt.Sprintf("%s: %d", "plattokenlogin", goindex)
 	// get serverlist
 	serverlist := fmt.Sprintf(`{"do":"request-zone-list", "gameid":%d, "zoneid":301, "data":{"platinfo":{"account":"zwl", "platid":67}}}`, gameid)
@@ -60,7 +56,7 @@ func connect(goindex int) {
 
 	//logging.Info("zonelist  %s", string(zonelist))
 	// plat-token-login
-	plattokenlogin := fmt.Sprintf(`{"do":"plat-token-login", "gameid":%d, "zoneid":301, "data":{"platinfo":{"account":"zwl", "platid":67}}}`, gameid)
+	plattokenlogin := fmt.Sprintf(`{"do":"plat-token-login", "gameid":%d, "zoneid":301, "data":{"platinfo":{"sign":"%s", "account":"23813", "platid":67}}}`, gameid, sum)
 	bOk, token := httpsend(loginUrl, plattokenlogin, count)
 	if !bOk {
 		logging.Error("httpsend error plat-token-login ")
@@ -109,36 +105,55 @@ func connect(goindex int) {
 		gateway1 += 1
 	}
 	logging.Info("gateway1 %d, gateway2 %d", gateway1, gateway2)
+	signurl, dataSend = sendSign(uid, "Cmd.Login_C", "{}", unigame_plat_key, unigame_plat_login, gatewayurl, gameid, zoneid)
+	httpsend(signurl, string(dataSend), count)
 	// sendTounilight
-	for j := 0; j < send; j += 1 {
-		signurl, dataSend := sendSign(uid, "Cmd.UserInfoSynRequestLbyCmd_C", "{}", unigame_plat_key, unigame_plat_login, gatewayurl, gameid, zoneid)
-		bOk, token = httpsend(signurl, string(dataSend), count)
-		shutdown += 1
-		if !bOk {
-			logging.Error("httpsend errordquestLbyCmd_c")
-			return
-		}
-		js, err = sjson.NewJson(token)
-		if err != nil {
-			logging.Error("UserInfoSynRequestLbyCmd_C zone to json error")
-			return
-		}
-		js.Get("data").Get("desc").MustString()
-		countMsg += 1
-		//logging.Info("rev unilight%s, 第%d个携程中的第%d次访问， 共访问次数%d", desc, goindex, j, countMsg)
+	signurl, dataSend = sendSign(uid, "Pmd.RequestQueryPlatPointSdkPmd_C", "{}", unigame_plat_key, unigame_plat_login, gatewayurl, gameid, zoneid)
+	bOk, token = httpsend(signurl, string(dataSend), count)
+	if !bOk {
+		logging.Error("httpsend error error")
+		return
 	}
-	/*
-		if shutdown > send*cnn-10000 {
-			c <- 1
-		}
-	*/
+	logging.Info("积分查询", string(token))
+
+	jsd := sjson.New()
+	jsd.Set("goodid", 1)
+	jsd.Set("money", 100)
+	jsdata, _ := jsd.Encode()
+	jsstr := string(jsdata)
+	jsstr = strings.Replace(jsstr, "\\", "", -1)
+	signurl, dataSend = sendSign(uid, "Pmd.RequestRedeemPlatPointSdkPmd_C", jsstr, unigame_plat_key, unigame_plat_login, gatewayurl, gameid, zoneid)
+	bOk, token = httpsend(signurl, string(dataSend), count)
+	if !bOk {
+		logging.Error("httpsend error error")
+		return
+	}
+	jsd2 := sjson.New()
+	jsd2.Set("goodid", 1)
+	jsd2.Set("money", 10)
+	jsd2.Set("point", 10)
+	jsdata, _ = jsd2.Encode()
+	jsstr = string(jsdata)
+	signurl, dataSend = sendSign(uid, "Pmd.RequestRedeemBackPlatPointSdkPmd_C", jsstr, unigame_plat_key, unigame_plat_login, gatewayurl, gameid, zoneid)
+	bOk, token = httpsend(signurl, string(dataSend), count)
+	if !bOk {
+		logging.Error("httpsend error error")
+		return
+	}
+	logging.Info("带入", string(token))
+
+	c <- 1
 }
 
 func sendSign(uid, do, data, unigame_plat_key, unigame_plat_login, url string, gameid, zoneid int) (string, []byte) {
 	unigame_plat_timestamp := int(time.Now().Unix())
+	jsd := sjson.New()
+	jsd.Set("goodid", 1)
+	jsd.Set("money", 10)
+
 	js := sjson.New()
 	js.Set("do", do)
-	js.Set("data", data)
+	js.Set("data", jsd)
 	js.Set("unigame_plat_key", unigame_plat_key)
 	js.Set("unigame_plat_login", unigame_plat_login)
 	js.Set("gameid", gameid)

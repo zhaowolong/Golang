@@ -69,7 +69,7 @@ func main() {
 		log.Fatal("Prepare failed:", err.Error())
 	}
 	defer stmt.Close()
-
+	stmt.Exec()
 	row := stmt.QueryRow()
 	var somenumber int64
 	var somechars string

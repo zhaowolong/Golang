@@ -1,10 +1,10 @@
 package main
 
-import(
+import (
 	"net/http"
 )
 
-func main(){
+func main() {
 	http.Handle("/", http.FileServer(http.Dir("./http/")))
-	http.ListenAndServe(":7324", nil)
+	http.ListenAndServe(":8080", nil)
 }
