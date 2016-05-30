@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 
 	"git.code4.in/mobilegameserver/config"
 	"git.code4.in/mobilegameserver/logging"
@@ -21,6 +22,7 @@ func main() {
 	}
 	mysqlurl := config.GetConfigStr("mysql")
 	logging.Info("connect mysql %s", mysqlurl)
+	mysqlurl = strings.Replace(mysqlurl, "mysql://", "", 1)
 	db, err := sql.Open("mysql", mysqlurl)
 	if err != nil {
 		logging.Error(err.Error())
@@ -29,13 +31,14 @@ func main() {
 	db_login = db
 
 	mysqlurl = config.GetConfigStr("mysql_zone")
+	mysqlurl = strings.Replace(mysqlurl, "mysql://", "", 1)
 	logging.Info("connect mysql %s", mysqlurl)
-	db, err = sql.Open("mysql", mysqlurl)
+	db2, err := sql.Open("mysql", mysqlurl)
 	if err != nil {
 		logging.Error(err.Error())
 		return
 	}
-	db_zone = db
+	db_zone = db2
 	rows, err := db_login.Query(`select id, plataccount from channel_accounts`)
 	if err != nil {
 		logging.Error("select channel_accounts err:%s", err.Error())
@@ -50,7 +53,7 @@ func main() {
 			logging.Error("db_login err:%s", err.Error())
 			continue
 		}
-		query_string := fmt.Sprintf("replace into charnames_300s (zoneid,accountid,accountname,charname,createip) values(%d,%d,%s,%s,%s)", 100, id, plataccount, id, "")
+		query_string := fmt.Sprintf("replace into charnames_300s (zoneid,accountid,accountname,charname,createip) values(%d,%d,%s,%d,%s)", 100, id, plataccount, id, "")
 		_, err := db_zone.Exec(query_string)
 		if err != nil {
 			logging.Error("insert error %d, %s", index, query_string)
