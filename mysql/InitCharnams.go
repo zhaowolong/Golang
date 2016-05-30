@@ -21,6 +21,7 @@ func main() {
 		return
 	}
 	mysqlurl := config.GetConfigStr("mysql")
+	tableName := config.GetConfigStr("charnames")
 	logging.Info("connect mysql %s", mysqlurl)
 	mysqlurl = strings.Replace(mysqlurl, "mysql://", "", 1)
 	db, err := sql.Open("mysql", mysqlurl)
@@ -53,10 +54,10 @@ func main() {
 			logging.Error("db_login err:%s", err.Error())
 			continue
 		}
-		query_string := fmt.Sprintf("replace into charnames_300s (zoneid,accountid,accountname,charname,createip) values(%d,%d,%s,%d,%s)", 100, id, plataccount, id, "")
+		query_string := fmt.Sprintf("replace into %s(zoneid,accountid,accountname,charname) values(%d,%d,'%s','%d')", tableName, 100, id, plataccount, id)
 		_, err := db_zone.Exec(query_string)
 		if err != nil {
-			logging.Error("insert error %d, %s", index, query_string)
+			logging.Error("insert error %d, %s %s", index, query_string, err.Error())
 		} else {
 			logging.Info("process %d ok", index)
 			index += 1
