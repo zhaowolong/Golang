@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!--所有各种服务器参数,这里只放每个区都不同的配置-->
+<GXTime>
+    <global>
+        <!-- Use the specified local network device. -->
+        <!--mysql encode="no">mysql://root:84e59e01dbb5f189@tcp(10.17.104.56:3306)/MonitorServer</mysql-->
+        <!--redis>tcp://auth:password@127.0.0.1:6379/0?timeout=10s&amp;maxidle=10</redis-->
+        <redis>tcp://127.0.0.1:6379/0?timeout=10s&amp;maxidle=10</redis>
+        <mysql_zone encode="no">mysql://root:@tcp(127.0.0.1:3306)/PlatServer</mysql_zone>
+        <mysql encode="no">mysql://root:@tcp(127.0.0.1:3306)/PlatServer</mysql>
+        <ifname>lo0</ifname>
+        <ip>127.0.0.1</ip>
+        <debug>true</debug>
+        <serverList>serverList.xml</serverList>
+    </global>
+    <GatewayServer>
+        <logfilename>log/gatewayserver.log</logfilename>
+        <ip>127.0.0.1</ip>
+    </GatewayServer>
+    <LoginServer>
+        <log>debug</log>
+        <clientloglevel>debug</clientloglevel>
+        <clientlogfilename>log/client.log</clientlogfilename>
+        <logfilename>log/loginserver.log</logfilename>
+        <!--端口/-->
+        <port>7000</port>
+        <!--暂时放这里以后整理/-->
+	<key_67 desc="手上活老虎机">80f47650ba0d2834f54c837d518a8eca</key_67>
+    </LoginServer>
+    <MonitorServer>
+        <mysql encode="no">mysql://root:@tcp(127.0.0.1:3306)/MonitorServer</mysql>
+        <clientloglevel>debug</clientloglevel>
+        <clientlogfilename>log/client.log</clientlogfilename>
+        <logfilename>log/monitorserver.log</logfilename>
+        <!--端口/-->
+        <port>7002</port>
+    </MonitorServer>
+    <SdkServer>
+        <mysql encode="no">mysql://root:@tcp(127.0.0.1:3306)/SdkServer</mysql>
+        <clientloglevel>debug</clientloglevel>
+        <clientlogfilename>log/client.log</clientlogfilename>
+        <logfilename>log/sdkserver.log</logfilename>
+        <!--端口/-->
+        <port>7003</port>
+        <port_bw_login>7004</port_bw_login>
+    </SdkServer>
+    <RobotClient>
+        <logfilename>log/robotclient.log</logfilename>
+    </RobotClient>
+</GXTime>
+

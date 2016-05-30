@@ -1,18 +1,18 @@
 package main
 
-import(
-	"fmt"
+import (
 	"bytes"
+	"fmt"
 	"os"
 )
 
-func main(){
+func main() {
 	buffer := bytes.NewBufferString("caonima teset heloowdkljsfkljsldjflsdjfldsjflads;fklasdnfo;ewhvoifqwl;j")
 	fmt.Println(buffer.String(), buffer.Len())
 	fmt.Println(buffer.Bytes())
 	bytes := buffer.Bytes()
 	bytes[0] = 'c' + 1
-	
+
 	fmt.Println(buffer.String(), buffer.Len())
 
 	//Truncate
@@ -39,8 +39,11 @@ func main(){
 	fmt.Println(buffer.String(), buffer.Len())
 
 	// 从io读取
-
-//	buffer.Reset()
-//	buffer.ReadFrom(os.Stdin)
+	//	buffer.Reset()
+	//	buffer.ReadFrom(os.Stdin)
 	buffer.WriteTo(os.Stdout)
+	var testArray [][2]string
+	testArray = make([][2]string, 1)
+	testArray[0][0] = "test"
+	fmt.Println(testArray[0][0])
 }

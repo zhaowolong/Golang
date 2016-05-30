@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GXTime>
+	<GatewayServerList>
+		<!--url_gatewaylist>http://14.17.104.56:7000/shen/gatewaylist</url_gatewaylist-->
+		<url_gatewaylist>http://127.0.0.1:7000/shen/gatewaylist</url_gatewaylist>
+	</GatewayServerList>
+	<SdkServerList>
+		<url_sdkserver>ws://127.0.0.1:7003/sdk/loginserver</url_sdkserver>
+		<origin_sdkserver>http://127.0.0.1</origin_sdkserver>
+	</SdkServerList>
+</GXTime>
