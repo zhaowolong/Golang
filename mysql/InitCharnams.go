@@ -57,15 +57,17 @@ func main() {
 		}
 		logging.Info("准备处理第%d个玩家玩家信息，处理之前数据 charid %d, accountid %d, accountname %s, charname %s", index, charid, accountid, accountname, charname)
 		index = index + 1
-		/*
-			query_string := fmt.Sprintf("replace into %s(zoneid,accountid,accountname,charname) values(%d,%d,'%s','%d')", tableName, 100, id, plataccount, id)
+
+		replace := config.GetConfigStr("replace")
+		if replace == "true" {
+			newcharname := strings.Replace(charname, "%", "_", -1)
+			query_string := fmt.Sprintf(`update %s set charname=%s where charid=%d,accountid=%d,accountname=%s`, tableName, newcharname, charid, accountid, accountname)
 			_, err := db_zone.Exec(query_string)
 			if err != nil {
 				logging.Error("insert error %d, %s %s", index, query_string, err.Error())
 			} else {
-				logging.Info("process %d ok", index)
-				index += 1
+				logging.Info("process %d ok from charname %s to %s", charname, newcharname)
 			}
-		*/
+		}
 	}
 }
