@@ -11,7 +11,7 @@ import (
 
 //var login_url = "http://14.17.104.56:8123/sdk/callback_login/?gameid=170&platid=11"
 //var login_url = "http://14.17.104.56:8123/sdk/callback_login"
-var login_url = "http://14.17.104.56:8126/requestlogin"
+var login_url = "http://127.0.0.1:7003/sdk/callback_payment?gameid=170&platid=11"
 var c = make(chan int)
 
 func main() {
