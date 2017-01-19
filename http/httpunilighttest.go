@@ -16,10 +16,12 @@ import (
 	sjson "github.com/bitly/go-simplejson"
 )
 
-//var loginUrl = "http://14.17.104.56:8000/zone/clientlog"
-var loginUrl = "http://127.0.0.1:7000/httplogin"
+//var loginUrl = "http://119.63.37.250:7000/httplogin"
+
+//var loginUrl = "http://14.17.104.56:8000/httplogin"
+var loginUrl = "http://14.17.104.56:7000/httplogin"
 var gameid = 170
-var zoneid = 301
+var zoneid = 100
 var gateway1 = 0
 var gateway2 = 0
 var c = make(chan int)
@@ -43,7 +45,7 @@ func main() {
 		goindex := i
 		go connect(goindex)
 		logging.Info("go rountion %d", i)
-		time.Sleep(10000)
+		time.Sleep(10000000)
 	}
 	fmt.Println(<-c)
 }
@@ -60,13 +62,13 @@ func connect(goindex int) {
 
 	//logging.Info("zonelist  %s", string(zonelist))
 	// plat-token-login
-	plattokenlogin := fmt.Sprintf(`{"do":"plat-token-login", "gameid":%d, "zoneid":301, "data":{"platinfo":{"account":"zwl", "platid":67}}}`, gameid)
+	plattokenlogin := fmt.Sprintf(`{"do":"plat-token-login", "gameid":%d, "zoneid":301, "data":{"platinfo":{"account":"", "platid":0}}}`, gameid)
 	bOk, token := httpsend(loginUrl, plattokenlogin, count)
 	if !bOk {
 		logging.Error("httpsend error plat-token-login ")
 		return
 	}
-	logging.Info("plat-token-login %s", string(token))
+	//logging.Info("plat-token-login %s", string(token))
 	js, err := sjson.NewJson(token)
 	if err != nil {
 		logging.Error("platt-token-login  to json error")
@@ -110,27 +112,27 @@ func connect(goindex int) {
 	}
 	logging.Info("gateway1 %d, gateway2 %d", gateway1, gateway2)
 	// sendTounilight
-	for j := 0; j < send; j += 1 {
-		signurl, dataSend := sendSign(uid, "Cmd.UserInfoSynRequestLbyCmd_C", "{}", unigame_plat_key, unigame_plat_login, gatewayurl, gameid, zoneid)
-		bOk, token = httpsend(signurl, string(dataSend), count)
-		shutdown += 1
-		if !bOk {
-			logging.Error("httpsend errordquestLbyCmd_c")
-			return
-		}
-		js, err = sjson.NewJson(token)
-		if err != nil {
-			logging.Error("UserInfoSynRequestLbyCmd_C zone to json error")
-			return
-		}
-		js.Get("data").Get("desc").MustString()
-		countMsg += 1
-		//logging.Info("rev unilight%s, 第%d个携程中的第%d次访问， 共访问次数%d", desc, goindex, j, countMsg)
-	}
 	/*
-		if shutdown > send*cnn-10000 {
-			c <- 1
+		for j := 0; j < send; j += 1 {
+			signurl, dataSend := sendSign(uid, "Cmd.UserInfoSynRequestLbyCmd_C", "{}", unigame_plat_key, unigame_plat_login, gatewayurl, gameid, zoneid)
+			bOk, token = httpsend(signurl, string(dataSend), count)
+			shutdown += 1
+			if !bOk {
+				logging.Error("httpsend errordquestLbyCmd_c")
+				return
+			}
+			js, err = sjson.NewJson(token)
+			if err != nil {
+				logging.Error("UserInfoSynRequestLbyCmd_C zone to json error")
+				return
+			}
+			js.Get("data").Get("desc").MustString()
+			countMsg += 1
+			//logging.Info("rev unilight%s, 第%d个携程中的第%d次访问， 共访问次数%d", desc, goindex, j, countMsg)
 		}
+			if shutdown > send*cnn-10000 {
+				c <- 1
+			}
 	*/
 }
 

@@ -38,7 +38,7 @@ func main() {
 		return
 	}
 	db_zone = db2
-	query_string := fmt.Sprintf(`select charid,accountid,accountname,charname form %s where charname like '%\%%'`, tableName)
+	query_string := fmt.Sprintf(`select charid,accountid,accountname,charname form %s where charname like '\%\\\%\%'`, tableName)
 	rows, err := db_login.Query(query_string)
 	if err != nil {
 		logging.Error("select channel_accounts err:%s", err.Error())
