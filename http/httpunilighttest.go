@@ -19,9 +19,9 @@ import (
 //var loginUrl = "http://119.63.37.250:7000/httplogin"
 
 //var loginUrl = "http://14.17.104.56:8000/httplogin"
-var loginUrl = "http://14.17.104.56:7000/httplogin"
-var gameid = 170
-var zoneid = 100
+var loginUrl = "http://47.89.42.117:7000/httplogin"
+var gameid = 9005
+var zoneid = 108
 var gateway1 = 0
 var gateway2 = 0
 var c = make(chan int)
@@ -29,6 +29,8 @@ var shutdown = 0
 var cnn = 1
 var send = 10
 var countMsg = 0
+var name = "t1_atison1"
+var pwd = "123123"
 
 func main() {
 	/*
@@ -49,7 +51,9 @@ func main() {
 	}
 	fmt.Println(<-c)
 }
-
+func exitfun() {
+	c <- 1
+}
 func connect(goindex int) {
 	count := fmt.Sprintf("%s: %d", "plattokenlogin", goindex)
 	// get serverlist
@@ -62,16 +66,17 @@ func connect(goindex int) {
 
 	//logging.Info("zonelist  %s", string(zonelist))
 	// plat-token-login
-	plattokenlogin := fmt.Sprintf(`{"do":"plat-token-login", "gameid":%d, "zoneid":301, "data":{"platinfo":{"account":"", "platid":0}}}`, gameid)
+	plattokenlogin := fmt.Sprintf(`{"do":"plat-token-login", "gameid":%d, "zoneid":%d, "data":{"platinfo":{"account":"%s", "platid":183, "sign":"%s"}}}`, gameid, zoneid, name, pwd)
 	bOk, token := httpsend(loginUrl, plattokenlogin, count)
 	if !bOk {
 		logging.Error("httpsend error plat-token-login ")
 		return
 	}
-	//logging.Info("plat-token-login %s", string(token))
+	logging.Info("plat-token-login %s", string(token))
 	js, err := sjson.NewJson(token)
-	if err != nil {
+	if err != nil || err == nil {
 		logging.Error("platt-token-login  to json error")
+		exitfun()
 		return
 	}
 	unigame_plat_key := js.Get("unigame_plat_key").MustString()
